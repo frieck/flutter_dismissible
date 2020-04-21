@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
@@ -10,10 +11,20 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Theme(
+      data: ThemeData(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: CupertinoApp(
+        title: 'Startup Name Generator',
+        home: RandomWords(),
+      ),
+    );
+    /*return CupertinoApp(
       title: 'Startup Name Generator',
       home: RandomWords(),
-    );
+    );*/
   }
 }
 
@@ -33,17 +44,21 @@ class RandomWordsState extends State<RandomWords> {
       tiles: tiles,
     ).toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Saved Suggestions'),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        previousPageTitle: 'Names',
+        middle: Text('Saved Suggestions'),
+        automaticallyImplyLeading: true,
       ),
-      body: ListView(children: divided.toList()),
+      child: Material(
+        child: ListView(children: divided.toList()),
+      ),
     );
   }
 
   void _pushSaved() {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
+      CupertinoPageRoute<void>(
         builder: likedBuilder,
       ),
     );
@@ -77,10 +92,7 @@ class RandomWordsState extends State<RandomWords> {
           ),
         ),
         child: ListTile(
-          title: Text(
-            pair.asPascalCase,
-            style: _biggerFont,
-          ),
+          title: Text(pair.asPascalCase),
         ),
         onDismissed: (direction) {
           setState(() {
@@ -113,14 +125,15 @@ class RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
-        ],
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('Startup Name Generator'),
+        trailing:
+            CupertinoButton(child: Icon(Icons.list), onPressed: _pushSaved),
       ),
-      body: _buildSuggestions(),
+      child: Scaffold(
+        body: _buildSuggestions(),
+      ),
     );
   }
 }
